@@ -1,0 +1,54 @@
+h1{
+    display: flex;
+    justify-content: center;
+    height: 10%;
+    color: blue;
+}
+#oponents{
+    display: flex;
+    justify-content: space-around;
+    color: blue;
+    font-size: x-large;
+}
+#oponents_wins{
+    display: flex;
+    justify-content: space-around;
+    color: red;
+    font-size: x-large;
+}
+#oponents_hands{
+    display: flex;
+    justify-content: space-around;
+    height: 5em;
+    margin-bottom: 2em;
+}
+#game_container{
+    display: flex;
+    justify-content: center;
+    height: 10em;
+}
+#player_1_hand_container{
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    height: 5em;
+    margin-top: 2em;
+}
+#pass{
+    display: flex;
+    margin-left: 40em;
+    font-size: x-large;
+}
+#player_1_wins{
+    display: flex;
+    justify-content: center;
+    font-size: x-large;
+    color: red;
+}
+#newGame{
+    display: flex;
+    justify-content: center;
+    font-size: x-large;
+    margin-left: 40em;
+    margin-top: 1em;
+}
