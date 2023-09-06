@@ -18,16 +18,22 @@ h1{
 }
 #oponents_hands{
     display: flex;
+    flex-wrap: nowrap;
     justify-content: space-around;
-    height: 5em;
     margin-bottom: 2em;
 }
-#game_container{
+#player_2_hand,#player_3_hand,#player_4_hand{
+    display: flex;
+    height: 5em;
+    width: 20em;
+    justify-content: space-around;
+}
+#game{
     display: flex;
     justify-content: center;
     height: 10em;
 }
-#player_1_hand_container{
+#player_1_hand{
     display: flex;
     justify-content: center;
     gap: 1em;
