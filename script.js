@@ -70,6 +70,7 @@ function updateImages(){
     player_1_hand.forEach((element)=>{
         player_1_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
+    while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
     game.forEach((element)=>{
         game_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
@@ -83,19 +84,16 @@ function removePreviousGame(){
 }
 function startGame(){
     
+
 }
-
-
-
-
 
 
 
 
 function newGame(){
     removePreviousGame();
-    while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
     repartir();
     updateImages();
+    startGame();
 }
 newGameButton.addEventListener("click", newGame);
