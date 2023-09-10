@@ -132,19 +132,16 @@ function continueGame(){
 }
 function player_1_turn(){
     actualPlayer = player_1_hand;
-    let valid = [];
+    let validPos = [];
 
     player_1_hand.forEach((element)=>{
-    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[1])) valid.push(player_1_hand.indexOf(element));
+    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[0])) validPos.push(player_1_hand.indexOf(element));
     })
-    if (valid.length=0) {
-        document.querySelector("#pass").addEventListener("click", ()=>{
-            nextPlayer = player_2_hand;
-        })
-    }
-    else {
-    valid.forEach((n)=>{
+    validPos.forEach((n)=>{
         player_1_span.childNodes[n].classList.add("valida");
+    })
+    document.querySelector("#pass").addEventListener("click", ()=>{
+        nextPlayer = player_2_hand;
     })
     document.querySelectorAll(".valida").forEach((element)=>{
         element.addEventListener("click", (event)=>{
@@ -154,13 +151,13 @@ function player_1_turn(){
             updateImages();
             nextPlayer = player_2_hand;
             })
-        })
-    }
+    })
+    
 }
 function computerTurn(actualPlayer, nextPlayer){
     let valid = [];
 actualPlayer.forEach((element)=>{
-    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[1])) valid.push(element);
+    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[0])) valid.push(element);
 })
 if (valid.length<=0) nextPlayer;
 let isDouble = false;
@@ -203,7 +200,8 @@ if (selectedElements3.length>0) selectedElement = selectedElements3[0];
 else if (selectedElements2.length>0) selectedElement = selectedElements2[0];
 else if (selectedElements1.length>0) selectedElement = selectedElements1[0];
 else if (valid.length>0) selectedElement = valid[0];
-game.push(selectedElement);
+if (selectedElement.includes(game[0].split("_")[0])) game.unshift(selectedElement);
+else if (selectedElement.includes(game[game.length-1].split("_")[0])) game.push(selectedElement);
 actualPlayer.splice(actualPlayer.indexOf(selectedElement), 1);
 updateImages();
 return nextPlayer;
