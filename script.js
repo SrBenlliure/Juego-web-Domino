@@ -74,6 +74,7 @@ function updateImages(){
         player_1_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
     while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
+    while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
     game.forEach((element)=>{
         game_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
