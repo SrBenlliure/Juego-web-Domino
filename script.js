@@ -12,6 +12,9 @@ const player_4_span = document.querySelector("#player_4_hand");
 const game_span = document.querySelector("#game");
 const newGameButton = document.querySelector("#newGame");
 const passButton = document.querySelector("#pass");
+let actualPlayer;
+let nextPlayer;
+let gameOver = false;
 
 function randomNumber(){
     let number = Math.floor((Math.random()*(27-0+1))+0);
@@ -70,6 +73,7 @@ function updateImages(){
     player_1_hand.forEach((element)=>{
         player_1_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
+    while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
     game.forEach((element)=>{
         game_span.insertAdjacentHTML("beforeend", `<img src="public/${element}.png" alt="${element}">`);
     })
@@ -81,21 +85,139 @@ function removePreviousGame(){
     player_4_hand = [];
     game = [];
 }
-function startGame(){
-    
+function checkMostUsedNumber() {
+  
+  let counter = {};
+  let mostUsedNumber = gameSplit[0];
+  let maxRepeats = 1;
+
+  for (let i = 0; i < gameSplit.length; i++) {
+    let element = gameSplit[i];
+
+    if (counter[element] == undefined) {
+      counter[element] = 1;
+    } else {
+      counter[element]++;
+    }
+    if (counter[element] > maxRepeats) {
+      maxRepeats = counter[element];
+      mostUsedNumber = element;
+    }
+  }
+  return mostUsedNumber;
 }
-
-
-
-
-
-
+function checkHighestNumber(hand){
+    let highestNumber = 0;
+    let highestElement;
+    hand.forEach((element)=>{
+        if (parseInt(element.split("_")[0])>highestNumber) {highestNumber = parseInt(element.split("_")[0]); highestElement = element}
+        if (parseInt(element.split("_")[1])>highestNumber) {highestNumber = parseInt(element.split("_")[1]); highestElement = element}
+    })
+    return highestElement;
+}
+function startGame(){
+    if (player_1_hand.indexOf("6_6")>=0) player_1_hand.splice(player_1_hand.indexOf("6_6"), 1);
+    if (player_2_hand.indexOf("6_6")>=0) player_2_hand.splice(player_2_hand.indexOf("6_6"), 1);
+    if (player_3_hand.indexOf("6_6")>=0) player_3_hand.splice(player_3_hand.indexOf("6_6"), 1);
+    if (player_4_hand.indexOf("6_6")>=0) player_4_hand.splice(player_4_hand.indexOf("6_6"), 1);
+    game.push("6_6");
+    updateImages();
+}
+function continueGame(){
+    if (player_1_hand.length<7) actualPlayer = player_2_hand;
+    if (player_2_hand.length<7) actualPlayer = player_3_hand;
+    if (player_3_hand.length<7) actualPlayer = player_4_hand;
+    if (player_4_hand.length<7) actualPlayer = player_1_hand;
+    return actualPlayer;
+}
+function player_1_turn(){
+    actualPlayer = player_1_hand;
+    let valid = [];
+    player_1_hand.forEach((element)=>{
+    if (element.includes("6")) valid.push(player_1_hand.indexOf(element));
+    })
+    if (valid.length=0) {
+        document.querySelector("#pass").addEventListener("click", ()=>{
+            nextPlayer = player_2_hand;
+        })
+    }
+    else {
+    valid.forEach((n)=>{
+        player_1_span.childNodes[n].classList.add("valida");
+    })
+    document.querySelectorAll(".valida").forEach((element)=>{
+        element.addEventListener("click", (event)=>{
+            let player_1_span_array = Array.from(player_1_span.childNodes);
+            game.push(player_1_hand[player_1_span_array.indexOf(event.target)]);
+            player_1_hand.splice(player_1_span_array.indexOf(event.target), 1);
+            updateImages();
+            nextPlayer = player_2_hand;
+            })
+        })
+    }
+}
+function computerTurn(actualPlayer, nextPlayer){
+actualPlayer.forEach((element)=>{
+    if (element.includes("6")) valid.push(element);
+})
+let isDouble = false;
+let selectedElements1 = [];
+valid.forEach((element)=>{
+    if (element.split("_")[0] == element.split("_")[1]) {isDouble = true; selectedElements1.push(element)}
+})
+let gameSplit = [];
+game.forEach((element)=>{
+    gameSplit.push(element.split("_"));
+})
+checkMostUsedNumber();
+let selectedElements2 = [];
+if (selectedElements1) {
+    selectedElements1.forEach((element)=>{
+        if (element.includes(mostUsedNumber)) selectedElements2.push(element);
+    })
+}
+else valid.forEach((element)=>{
+    if (element.includes(mostUsedNumber)) selectedElements1.push(element);
+})
+let selectedElements3 = [];
+if (selectedElements2) {
+    checkHighestNumber(selectedElements2);
+    selectedElements2.forEach((element)=>{
+        if (element.includes(highestElement)) selectedElements3.push(element);
+    })
+}
+else {
+    checkHighestNumber(valid);
+    valid.forEach((element)=>{
+        if (element.includes(highestElement)) selectedElements2.push(element);
+    })
+}
+let selectedElement;
+if (selectedElements3) selectedElement = selectedElements3[0];
+else if (selectedElements2) selectedElement = selectedElements2[0];
+else if (selectedElements1) selectedElement = selectedElements1[0];
+else if (valid) selectedElement = valid[0];
+game.push(selectedElement);
+actualPlayer.splice(actualPlayer.indexOf(selectedElement), 1);
+updateImages();
+return nextPlayer;
+}
 
 
 function newGame(){
     removePreviousGame();
-    while (game_span.firstChild) game_span.removeChild(game_span.firstChild);
     repartir();
     updateImages();
+    startGame();
+    continueGame();
+    while (!gameOver){
+        player_1_turn();
+        computerTurn(player_2_hand, player_3_hand);
+        computerTurn(player_3_hand, player_4_hand);
+        computerTurn(player_4_hand, player_1_hand);
+    }
+
+
 }
 newGameButton.addEventListener("click", newGame);
+

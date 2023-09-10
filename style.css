@@ -56,5 +56,8 @@ h1{
     justify-content: center;
     font-size: x-large;
     margin-left: 40em;
-    margin-top: 1em;
+    margin-top: 0em;
+}
+.valida{
+    border: 2px solid rgb(0, 255, 0);
 }
