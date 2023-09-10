@@ -85,14 +85,14 @@ function removePreviousGame(){
     player_4_hand = [];
     game = [];
 }
-function checkMostUsedNumber() {
+function checkMostUsedNumber(gameSplit) {
   
   let counter = {};
-  let mostUsedNumber = gameSplit[0];
+  let mostUsedNumber = parseInt(gameSplit[0]);
   let maxRepeats = 1;
 
   for (let i = 0; i < gameSplit.length; i++) {
-    let element = gameSplit[i];
+    let element = parseInt(gameSplit[i]);
 
     if (counter[element] == undefined) {
       counter[element] = 1;
@@ -133,8 +133,9 @@ function continueGame(){
 function player_1_turn(){
     actualPlayer = player_1_hand;
     let valid = [];
+
     player_1_hand.forEach((element)=>{
-    if (element.includes("6")) valid.push(player_1_hand.indexOf(element));
+    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[1])) valid.push(player_1_hand.indexOf(element));
     })
     if (valid.length=0) {
         document.querySelector("#pass").addEventListener("click", ()=>{
@@ -157,9 +158,11 @@ function player_1_turn(){
     }
 }
 function computerTurn(actualPlayer, nextPlayer){
+    let valid = [];
 actualPlayer.forEach((element)=>{
-    if (element.includes("6")) valid.push(element);
+    if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[1])) valid.push(element);
 })
+if (valid.length<=0) nextPlayer;
 let isDouble = false;
 let selectedElements1 = [];
 valid.forEach((element)=>{
@@ -169,9 +172,10 @@ let gameSplit = [];
 game.forEach((element)=>{
     gameSplit.push(element.split("_"));
 })
-checkMostUsedNumber();
+let mostUsedNumber;
+checkMostUsedNumber(gameSplit);
 let selectedElements2 = [];
-if (selectedElements1) {
+if (selectedElements1.length>0) {
     selectedElements1.forEach((element)=>{
         if (element.includes(mostUsedNumber)) selectedElements2.push(element);
     })
@@ -180,23 +184,25 @@ else valid.forEach((element)=>{
     if (element.includes(mostUsedNumber)) selectedElements1.push(element);
 })
 let selectedElements3 = [];
-if (selectedElements2) {
+if (selectedElements2.length>0) {
+    let highestElement;
     checkHighestNumber(selectedElements2);
     selectedElements2.forEach((element)=>{
         if (element.includes(highestElement)) selectedElements3.push(element);
     })
 }
 else {
+    let highestElement;
     checkHighestNumber(valid);
     valid.forEach((element)=>{
         if (element.includes(highestElement)) selectedElements2.push(element);
     })
 }
 let selectedElement;
-if (selectedElements3) selectedElement = selectedElements3[0];
-else if (selectedElements2) selectedElement = selectedElements2[0];
-else if (selectedElements1) selectedElement = selectedElements1[0];
-else if (valid) selectedElement = valid[0];
+if (selectedElements3.length>0) selectedElement = selectedElements3[0];
+else if (selectedElements2.length>0) selectedElement = selectedElements2[0];
+else if (selectedElements1.length>0) selectedElement = selectedElements1[0];
+else if (valid.length>0) selectedElement = valid[0];
 game.push(selectedElement);
 actualPlayer.splice(actualPlayer.indexOf(selectedElement), 1);
 updateImages();
