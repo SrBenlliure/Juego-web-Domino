@@ -5,6 +5,7 @@ let player_2_hand = [];
 let player_3_hand = [];
 let player_4_hand = [];
 let game = [];
+const turns = [player_1_hand, player_2_hand, player_3_hand, player_4_hand];
 const player_1_span = document.querySelector("#player_1_hand");
 const player_2_span = document.querySelector("#player_2_hand");
 const player_3_span = document.querySelector("#player_3_hand");
@@ -136,13 +137,14 @@ function startGame(){
     updateImages();
     return currentPlayer;
 }
-/*function nextPlayer(currentPlayer){
-    if (currentPlayer == player_1_hand) currentPlayer = player_2_hand;
-    if (currentPlayer == player_2_hand) currentPlayer = player_3_hand;
-    if (currentPlayer == player_3_hand) currentPlayer = player_4_hand;
-    if (currentPlayer == player_4_hand) currentPlayer = player_1_hand;
+function nextPlayer(){
+    let n = turns.indexOf(currentPlayer);
+    n++;
+    if (n == 4) n = 0;
+    currentPlayer = turns[n];
+    console.log(currentPlayer)
     return currentPlayer;
-}*/
+}
 function player_1_turn(){
     let validPos = [];
     player_1_hand.forEach((element)=>{
@@ -151,7 +153,7 @@ function player_1_turn(){
     validPos.forEach((n)=>{
         player_1_span.childNodes[n].classList.add("valida");
     })
-    document.querySelector("#pass").addEventListener("click", ()=>{currentPlayer = player_2_hand});
+    document.querySelector("#pass").addEventListener("click", nextPlayer);
     document.querySelectorAll(".valida").forEach((element)=>{
         element.addEventListener("click", (event)=>{
             let player_1_span_array = Array.from(player_1_span.childNodes);
@@ -160,7 +162,7 @@ function player_1_turn(){
             updateImages();
         })
     })
-    currentPlayer = player_2_hand;
+    nextPlayer;
     return currentPlayer;
 }
 function computerTurn(computerPlayer){
@@ -168,11 +170,7 @@ function computerTurn(computerPlayer){
     computerPlayer.forEach((element)=>{
     if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[0])) valid.push(element);
     })
-if (valid.length<=0){
-    if (computerPlayer == player_2_hand) currentPlayer = player_3_hand;
-    if (computerPlayer == player_3_hand) currentPlayer = player_4_hand;
-    if (computerPlayer == player_4_hand) currentPlayer = player_1_hand;
-}
+if (valid.length<=0) nextPlayer;
 let isDouble = false;
 let selectedElements1 = [];
 valid.forEach((element)=>{
@@ -217,9 +215,7 @@ if (selectedElement.includes(game[0].split("_")[0])) game.unshift(selectedElemen
 else if (selectedElement.includes(game[game.length-1].split("_")[0])) game.push(selectedElement);
 computerPlayer.splice(computerPlayer.indexOf(selectedElement), 1);
 updateImages();
-if (computerPlayer == player_2_hand) currentPlayer = player_3_hand;
-if (computerPlayer == player_3_hand) currentPlayer = player_4_hand;
-if (computerPlayer == player_4_hand) currentPlayer = player_1_hand;
+nextPlayer;
 return currentPlayer;
 }
 
