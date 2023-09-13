@@ -12,8 +12,7 @@ const player_4_span = document.querySelector("#player_4_hand");
 const game_span = document.querySelector("#game");
 const newGameButton = document.querySelector("#newGame");
 const passButton = document.querySelector("#pass");
-let actualPlayer;
-let nextPlayer;
+let currentPlayer;
 let gameOver = false;
 
 function randomNumber(){
@@ -117,50 +116,63 @@ function checkHighestNumber(hand){
     return highestElement;
 }
 function startGame(){
-    if (player_1_hand.indexOf("6_6")>=0) player_1_hand.splice(player_1_hand.indexOf("6_6"), 1);
-    if (player_2_hand.indexOf("6_6")>=0) player_2_hand.splice(player_2_hand.indexOf("6_6"), 1);
-    if (player_3_hand.indexOf("6_6")>=0) player_3_hand.splice(player_3_hand.indexOf("6_6"), 1);
-    if (player_4_hand.indexOf("6_6")>=0) player_4_hand.splice(player_4_hand.indexOf("6_6"), 1);
+    if (player_1_hand.indexOf("6_6")>=0){
+        player_1_hand.splice(player_1_hand.indexOf("6_6"), 1);
+        currentPlayer = player_2_hand;
+    }
+    if (player_2_hand.indexOf("6_6")>=0){ 
+        player_2_hand.splice(player_2_hand.indexOf("6_6"), 1);
+        currentPlayer = player_3_hand;
+    }
+    if (player_3_hand.indexOf("6_6")>=0){
+        player_3_hand.splice(player_3_hand.indexOf("6_6"), 1);
+        currentPlayer = player_4_hand;
+    }
+    if (player_4_hand.indexOf("6_6")>=0){
+        player_4_hand.splice(player_4_hand.indexOf("6_6"), 1);
+        currentPlayer = player_1_hand;
+    }
     game.push("6_6");
     updateImages();
+    return currentPlayer;
 }
-function continueGame(){
-    if (player_1_hand.length<7) actualPlayer = player_2_hand;
-    if (player_2_hand.length<7) actualPlayer = player_3_hand;
-    if (player_3_hand.length<7) actualPlayer = player_4_hand;
-    if (player_4_hand.length<7) actualPlayer = player_1_hand;
-    return actualPlayer;
-}
+/*function nextPlayer(currentPlayer){
+    if (currentPlayer == player_1_hand) currentPlayer = player_2_hand;
+    if (currentPlayer == player_2_hand) currentPlayer = player_3_hand;
+    if (currentPlayer == player_3_hand) currentPlayer = player_4_hand;
+    if (currentPlayer == player_4_hand) currentPlayer = player_1_hand;
+    return currentPlayer;
+}*/
 function player_1_turn(){
-    actualPlayer = player_1_hand;
     let validPos = [];
-
     player_1_hand.forEach((element)=>{
     if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[0])) validPos.push(player_1_hand.indexOf(element));
     })
     validPos.forEach((n)=>{
         player_1_span.childNodes[n].classList.add("valida");
     })
-    document.querySelector("#pass").addEventListener("click", ()=>{
-        nextPlayer = player_2_hand;
-    })
+    document.querySelector("#pass").addEventListener("click", ()=>{currentPlayer = player_2_hand});
     document.querySelectorAll(".valida").forEach((element)=>{
         element.addEventListener("click", (event)=>{
             let player_1_span_array = Array.from(player_1_span.childNodes);
             game.push(player_1_hand[player_1_span_array.indexOf(event.target)]);
             player_1_hand.splice(player_1_span_array.indexOf(event.target), 1);
             updateImages();
-            nextPlayer = player_2_hand;
-            })
+        })
     })
-    
+    currentPlayer = player_2_hand;
+    return currentPlayer;
 }
-function computerTurn(actualPlayer, nextPlayer){
+function computerTurn(computerPlayer){
     let valid = [];
-actualPlayer.forEach((element)=>{
+    computerPlayer.forEach((element)=>{
     if (element.includes(game[0].split("_")[0]) || element.includes(game[game.length-1].split("_")[0])) valid.push(element);
-})
-if (valid.length<=0) nextPlayer;
+    })
+if (valid.length<=0){
+    if (computerPlayer == player_2_hand) currentPlayer = player_3_hand;
+    if (computerPlayer == player_3_hand) currentPlayer = player_4_hand;
+    if (computerPlayer == player_4_hand) currentPlayer = player_1_hand;
+}
 let isDouble = false;
 let selectedElements1 = [];
 valid.forEach((element)=>{
@@ -203,9 +215,12 @@ else if (selectedElements1.length>0) selectedElement = selectedElements1[0];
 else if (valid.length>0) selectedElement = valid[0];
 if (selectedElement.includes(game[0].split("_")[0])) game.unshift(selectedElement);
 else if (selectedElement.includes(game[game.length-1].split("_")[0])) game.push(selectedElement);
-actualPlayer.splice(actualPlayer.indexOf(selectedElement), 1);
+computerPlayer.splice(computerPlayer.indexOf(selectedElement), 1);
 updateImages();
-return nextPlayer;
+if (computerPlayer == player_2_hand) currentPlayer = player_3_hand;
+if (computerPlayer == player_3_hand) currentPlayer = player_4_hand;
+if (computerPlayer == player_4_hand) currentPlayer = player_1_hand;
+return currentPlayer;
 }
 
 
@@ -214,15 +229,11 @@ function newGame(){
     repartir();
     updateImages();
     startGame();
-    continueGame();
     while (!gameOver){
-        player_1_turn();
-        computerTurn(player_2_hand, player_3_hand);
-        computerTurn(player_3_hand, player_4_hand);
-        computerTurn(player_4_hand, player_1_hand);
+        if (currentPlayer == player_1_hand) player_1_turn();
+        if (currentPlayer == player_2_hand) computerTurn(player_2_hand);
+        if (currentPlayer == player_3_hand) computerTurn(player_3_hand);
+        if (currentPlayer == player_4_hand) computerTurn(player_4_hand);
     }
-
-
 }
 newGameButton.addEventListener("click", newGame);
-
