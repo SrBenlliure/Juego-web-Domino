@@ -28,10 +28,15 @@ h1{
     width: 20em;
     justify-content: space-around;
 }
+.piece{
+    height: 8em;
+}
 #game{
     display: flex;
     justify-content: center;
-    height: 10em;
+    flex-wrap: wrap;
+    margin-left: 2em;
+    margin-right: 2em;
 }
 #player_1_hand{
     display: flex;
