@@ -6,7 +6,6 @@ let player_3_hand = [];
 let player_4_hand = [];
 let game = [];
 const turns = [player_1_hand, player_2_hand, player_3_hand, player_4_hand];
-const turns = [player_1_hand, player_2_hand, player_3_hand, player_4_hand];
 const player_1_span = document.querySelector("#player_1_hand");
 const player_2_span = document.querySelector("#player_2_hand");
 const player_3_span = document.querySelector("#player_3_hand");
