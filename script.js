@@ -6,6 +6,7 @@ let player_3_hand = [];
 let player_4_hand = [];
 let game = [];
 const turns = [player_1_hand, player_2_hand, player_3_hand, player_4_hand];
+const turns = [player_1_hand, player_2_hand, player_3_hand, player_4_hand];
 const player_1_span = document.querySelector("#player_1_hand");
 const player_2_span = document.querySelector("#player_2_hand");
 const player_3_span = document.querySelector("#player_3_hand");
@@ -167,7 +168,7 @@ function player_turn(player_hand){
     validPos.forEach((n)=>{
         player_1_span.childNodes[n].classList.add("valida");
     })
-    document.querySelector("#pass").addEventListener("click", ()=>{currentPlayer = player_2_hand});
+    document.querySelector("#pass").addEventListener("click", nextPlayer);
     document.querySelectorAll(".valida").forEach((element)=>{
         element.addEventListener("click", (event)=>{
             let player_1_span_array = Array.from(player_1_span.childNodes);
@@ -199,11 +200,7 @@ function computer_turn(computerPlayer){
     computerPlayer.forEach((element)=>{
     if (element.includes(validSplit[0]) || element.includes(validSplit[1])) valid.push(element);
     })
-if (valid.length<=0){
-    if (computerPlayer == player_2_hand) currentPlayer = player_3_hand;
-    if (computerPlayer == player_3_hand) currentPlayer = player_4_hand;
-    if (computerPlayer == player_4_hand) currentPlayer = player_1_hand;
-}
+if (valid.length<=0) nextPlayer;
 let isDouble = false;
 let selectedElements1 = [];
 valid.forEach((element)=>{
